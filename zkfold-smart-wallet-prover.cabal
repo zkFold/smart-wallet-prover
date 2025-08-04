@@ -1,0 +1,84 @@
+cabal-version: 3.4
+name: zkfold-smart-wallet-prover
+version: 0.1.0.0
+license: MIT
+license-file: LICENSE
+author: Vladimir Morozov 
+maintainer: info@zkfold.io
+build-type: Simple
+extra-doc-files: CHANGELOG.md
+
+common common
+  default-language: GHC2021
+  default-extensions:
+    DataKinds
+    DeriveAnyClass
+    DerivingStrategies
+    DerivingVia
+    GADTs
+    LambdaCase
+    MultiWayIf
+    OverloadedStrings
+    RecordWildCards
+    RoleAnnotations
+    TemplateHaskell
+    TypeFamilies
+    TypeFamilyDependencies
+    UndecidableInstances
+    UnicodeSyntax
+    ViewPatterns
+
+  ghc-options:
+    -Wall
+    -Werror
+    -Wincomplete-uni-patterns
+    -Wunused-packages
+
+library
+  import: common
+  exposed-modules:
+    ZkFold.Cardano.SmartWallet.Api
+    ZkFold.Cardano.SmartWallet.Api.Encryption
+    ZkFold.Cardano.SmartWallet.Api.Prove
+    ZkFold.Cardano.SmartWallet.Orphans
+    ZkFold.Cardano.SmartWallet.Types
+    ZkFold.Cardano.SmartWallet.Types.Common
+    ZkFold.Cardano.SmartWallet.Types.Ctx
+    ZkFold.Cardano.SmartWallet.Types.Encryption
+    ZkFold.Cardano.SmartWallet.Types.Errors
+    ZkFold.Cardano.SmartWallet.Types.Prove
+    ZkFold.Cardano.SmartWallet.Server
+    ZkFold.Cardano.SmartWallet.Server.Handler
+    ZkFold.Cardano.SmartWallet.Utils
+
+  build-depends:
+    base >=4.18.2.1 && <5,
+    adjunctions,
+    aeson,
+    bytestring,
+    containers,
+    cryptonite,
+    deriving-aeson,
+    lens,
+    mtl,
+    stm,
+    servant-server,
+    swagger2,
+    symbolic-base,
+    symbolic-examples,
+    text,
+    time,
+    uuid,
+    warp,
+
+  hs-source-dirs: src
+
+executable smart-wallet-prover
+  import: common
+  main-is: Main.hs
+  build-depends:
+    base,
+    optparse-applicative,
+    zkfold-smart-wallet-prover,
+
+  hs-source-dirs: app
