@@ -10,7 +10,7 @@ import Servant
 import ZkFold.Cardano.SmartWallet.Api
 import ZkFold.Cardano.SmartWallet.Types
 
-type ProverAPI =
+type ProverEndpoints =
   Summary "Get server public keys."
     :> "keys"
     :> Get '[JSON] [PublicKeyBundle]
@@ -22,6 +22,8 @@ type ProverAPI =
       :> "proof-status"
       :> ReqBody '[JSON] ProofId
       :> Post '[JSON] ProofStatus
+
+type ProverAPI = "v0" :> ProverEndpoints
 
 proverApi ∷ Proxy ProverAPI
 proverApi = Proxy ∷ Proxy ProverAPI
