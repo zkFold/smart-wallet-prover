@@ -1,5 +1,4 @@
 import Options.Applicative
-
 import ZkFold.Cardano.SmartWallet.Server
 
 newtype Port = Port Int
@@ -25,6 +24,6 @@ main = do
     info
       (portParser <**> helper)
       ( fullDesc
-          <> progDesc "zkFold smart wallet prover"
-          <> header "zkFold smart wallet"
+          <> progDesc "Smart Wallet prover"
+          <> header "zkFold's Smart Wallet prover server"
       )

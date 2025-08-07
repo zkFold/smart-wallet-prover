@@ -1,5 +1,5 @@
 cabal-version: 3.4
-name: zkfold-smart-wallet-prover
+name: smart-wallet-prover
 version: 0.1.0.0
 license: MIT
 license-file: LICENSE
@@ -82,6 +82,6 @@ executable smart-wallet-prover
   build-depends:
     base,
     optparse-applicative,
-    zkfold-smart-wallet-prover,
+    smart-wallet-prover,
 
   hs-source-dirs: app
