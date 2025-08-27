@@ -2,10 +2,16 @@ module ZkFold.Cardano.SmartWallet.Server.Handler (
   ProverAPI,
   proverApi,
   handleProverApi,
+  MainAPI,
+  mainAPI,
+  handleMainApi,
 ) where
 
 import Data.Proxy
+import Data.Swagger
 import Servant
+import Servant.Swagger
+import Servant.Swagger.UI
 
 import ZkFold.Cardano.SmartWallet.Api
 import ZkFold.Cardano.SmartWallet.Types
@@ -28,6 +34,9 @@ type ProverAPI = "v0" :> ProverEndpoints
 proverApi ∷ Proxy ProverAPI
 proverApi = Proxy ∷ Proxy ProverAPI
 
+swagger ∷ Swagger
+swagger = toSwagger proverApi
+
 handleProverApi ∷ Ctx → Server ProverAPI
 handleProverApi ctx =
   handleGetKeys ctx
@@ -42,3 +51,11 @@ handleProve Ctx {..} = prove ctxProofsDatabase ctxServerKeys
 
 handleProofStatus ∷ Ctx → ProofId → Handler ProofStatus
 handleProofStatus Ctx {..} = getProofStatus ctxProofsDatabase
+
+type MainAPI = ProverAPI :<|> SwaggerSchemaUI "docs" "swagger.json"
+
+mainAPI ∷ Proxy MainAPI
+mainAPI = Proxy
+
+handleMainApi ∷ Ctx → Server MainAPI
+handleMainApi ctx = handleProverApi ctx :<|> swaggerSchemaUIServer swagger

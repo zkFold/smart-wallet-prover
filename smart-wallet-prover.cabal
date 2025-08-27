@@ -63,6 +63,8 @@ library
     mtl,
     stm,
     servant-server,
+    servant-swagger,
+    servant-swagger-ui,
     swagger2,
     symbolic-base,
     symbolic-examples,
