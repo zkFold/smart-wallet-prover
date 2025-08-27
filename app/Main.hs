@@ -1,4 +1,5 @@
 import Options.Applicative
+
 import ZkFold.Cardano.SmartWallet.Server
 
 newtype Port = Port Int

@@ -41,4 +41,4 @@ runServer port = do
         { ctxProofsDatabase = proofsDb
         , ctxServerKeys = keysVar
         }
-  run port $ logStdout $ corsMiddleware $ serve proverApi $ handleProverApi ctx
+  run port $ logStdout $ corsMiddleware $ serve mainAPI $ handleMainApi ctx
