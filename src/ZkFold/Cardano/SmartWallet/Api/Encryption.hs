@@ -47,19 +47,19 @@ stripPKCS7 bs = do
 decryptInput ∷ ProveRequestMonad m ⇒ TVar [KeyPair] → ZKProveRequest → m ExpModProofInput
 decryptInput keysVar ZKProveRequest {..} = do
   serverKeys ← getServerKeys keysVar
-  let matchingKeys = filter ((== preqKeyId) . kpId) serverKeys
-  when (null matchingKeys) $ throw (ZKPEKeyError (ZKInvalidKeyID $ keyIdToText preqKeyId))
+  let matchingKeys = filter ((== preqServerKeyId) . kpId) serverKeys
+  when (null matchingKeys) $ throw (ZKPEKeyError (ZKInvalidKeyID $ keyIdToText preqServerKeyId))
   let KeyPair {..} = case matchingKeys of
         [k] → k
         _ → error "impossible"
 
   -- First, decode the symmetric AES key
-  aesKey ← decrypt (Just "AES key") kpPrivate (coerce preqAES)
+  aesKey ← decrypt (Just "AES key") kpPrivate (coerce preqAesEncryptionKey)
   unless (BS.length aesKey == 32) $
     throw (ZKPEDecryptionError $ ZKDecryptionFailed "AES key is not 32-byte long")
 
   -- Then, decode the payload itself
-  let (ivBytes, ciphertext) = BS.splitAt 16 (coerce preqPayload)
+  let (ivBytes, ciphertext) = BS.splitAt 16 (coerce preqEncryptedPayload)
   iv ← case makeIV ivBytes of
     Nothing → throw (ZKPEDecryptionError $ ZKDecryptionFailed "Invalid IV")
     Just iv' → pure iv'

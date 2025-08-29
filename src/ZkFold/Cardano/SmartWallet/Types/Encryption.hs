@@ -17,7 +17,9 @@ import Crypto.PubKey.RSA qualified as RSA
 import Crypto.PubKey.RSA.PKCS15 qualified as PKCS15
 import Crypto.Random.Types qualified as Crypto
 import Data.Aeson
+import Data.Aeson.Casing
 import Data.ByteString (ByteString)
+import Data.Char (isLower)
 import Data.Coerce (coerce)
 import Data.Function ((&))
 import Data.Maybe (fromMaybe)
@@ -99,11 +101,14 @@ data PublicKeyBundle
   , pkbPublic ∷ PublicKey
   }
   deriving stock (Eq, Generic, Show)
-  deriving anyclass (FromJSON, ToJSON)
+  deriving
+    (FromJSON, ToJSON)
+    via CustomJSON '[FieldLabelModifier '[StripPrefix "pkb", CamelToSnake]] PublicKeyBundle
 
 instance Swagger.ToSchema PublicKeyBundle where
   declareNamedSchema =
-    Swagger.genericDeclareNamedSchema Swagger.defaultSchemaOptions
+    Swagger.genericDeclareNamedSchema
+      Swagger.defaultSchemaOptions {Swagger.fieldLabelModifier = snakeCase . dropWhile isLower}
       & addSwaggerDescription "Public key with its ID"
 
 removePrivateKey ∷ KeyPair → PublicKeyBundle
