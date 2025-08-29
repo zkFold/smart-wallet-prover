@@ -11,6 +11,7 @@ module ZkFold.Cardano.SmartWallet.Types.Encryption (
   decrypt,
 ) where
 
+import Control.Lens hiding ((.=))
 import Control.Monad.IO.Class (MonadIO (..))
 import Crypto.PubKey.RSA (generate)
 import Crypto.PubKey.RSA qualified as RSA
@@ -21,15 +22,18 @@ import Data.Aeson.Casing
 import Data.ByteString (ByteString)
 import Data.Char (isLower)
 import Data.Coerce (coerce)
-import Data.Function ((&))
+import Data.HashMap.Strict.InsOrd qualified as InsOrd
 import Data.Maybe (fromMaybe)
+import Data.Proxy (Proxy (..))
 import Data.Swagger qualified as Swagger
+import Data.Swagger.Declare qualified as Swagger
 import Data.Text (Text)
 import Data.Time.Clock (UTCTime, addUTCTime, getCurrentTime, nominalDay)
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
 import Deriving.Aeson
+import GHC.Natural (Natural)
 
 import ZkFold.Cardano.SmartWallet.Orphans ()
 import ZkFold.Cardano.SmartWallet.Types.Common
@@ -71,9 +75,30 @@ instance ToJSON PublicKey where
       ]
 
 instance Swagger.ToSchema PublicKey where
-  declareNamedSchema =
-    Swagger.genericDeclareNamedSchema Swagger.defaultSchemaOptions
-      & addSwaggerDescription "Public key for encrypting ZK proof"
+  declareNamedSchema _ = do
+    natSchema ← Swagger.declareSchemaRef (Proxy ∷ Proxy Natural)
+    let schema =
+          Swagger.NamedSchema (Just "PublicKey") $
+            mempty
+              & Swagger.type_ ?~ Swagger.SwaggerObject
+              & Swagger.properties
+                .~ InsOrd.fromList
+                  [ ("public_size", natSchema)
+                  , ("public_n", natSchema)
+                  , ("public_e", natSchema)
+                  ]
+              & Swagger.required .~ ["public_size", "public_n", "public_e"]
+
+    defs ← Swagger.look
+    let inlineSchema@Swagger.NamedSchema {..} = Swagger.inlineNonRecursiveSchemas defs schema
+    pure inlineSchema {Swagger._namedSchemaSchema = customise _namedSchemaSchema}
+   where
+    customise schema =
+      schema
+        & addDescription "RSA public key for encrypting ZK proof"
+        & addFieldDescription "public_size" "Size of the RSA public key, in bits."
+        & addFieldDescription "public_n" "Public modulus used in the RSA algorithm, as a decimal integer."
+        & addFieldDescription "public_e" "Public exponent used in the RSA algorithm, as a decimal integer."
 
 newtype PrivateKey = PrivateKey RSA.PrivateKey
   deriving stock (Eq, Generic, Show)
@@ -109,7 +134,7 @@ instance Swagger.ToSchema PublicKeyBundle where
   declareNamedSchema =
     Swagger.genericDeclareNamedSchema
       Swagger.defaultSchemaOptions {Swagger.fieldLabelModifier = snakeCase . dropWhile isLower}
-      & addSwaggerDescription "Public key with its ID"
+      & addSwaggerDescription "RSA public key with its ID"
 
 removePrivateKey ∷ KeyPair → PublicKeyBundle
 removePrivateKey KeyPair {..} = PublicKeyBundle kpId kpPublic
