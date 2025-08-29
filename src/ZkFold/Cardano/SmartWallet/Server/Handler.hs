@@ -7,12 +7,17 @@ module ZkFold.Cardano.SmartWallet.Server.Handler (
   handleMainApi,
 ) where
 
+import Control.Lens ((.~), (?~))
+import Data.Function ((&))
 import Data.Proxy
 import Data.Swagger
+import Data.Text qualified as T
+import Data.Version (showVersion)
 import Servant
 import Servant.Swagger
 import Servant.Swagger.UI
 
+import PackageInfo_smart_wallet_prover qualified as PackageInfo
 import ZkFold.Cardano.SmartWallet.Api
 import ZkFold.Cardano.SmartWallet.Types
 
@@ -34,8 +39,34 @@ type ProverAPI = "v0" :> ProverEndpoints
 proverApi ∷ Proxy ProverAPI
 proverApi = Proxy ∷ Proxy ProverAPI
 
-swagger ∷ Swagger
-swagger = toSwagger proverApi
+proverSwagger ∷ Swagger
+proverSwagger =
+  toSwagger proverApi
+    & info
+      . title
+      .~ "zkFold Smart Wallet Prover API"
+    & info
+      . version
+      .~ (T.pack . showVersion $ PackageInfo.version)
+    & info
+      . license
+      ?~ ("Apache-2.0" & url ?~ URL "https://opensource.org/licenses/apache-2-0")
+    & info
+      . contact
+      ?~ ( mempty
+             & url
+               ?~ URL "https://zkfold.io/"
+             & email
+               ?~ "info@zkfold.io"
+             & name
+               ?~ "zkFold Technical Support"
+         )
+    & info
+      . description
+      ?~ "ZK Prover."
+    & applyTagsFor
+      (subOperations (Proxy ∷ Proxy ProverAPI) (Proxy ∷ Proxy ProverAPI))
+      ["ZK prover endpoints" & description ?~ "Get server public keys, submit a proof and get proof status."]
 
 handleProverApi ∷ Ctx → Server ProverAPI
 handleProverApi ctx =
@@ -58,4 +89,4 @@ mainAPI ∷ Proxy MainAPI
 mainAPI = Proxy
 
 handleMainApi ∷ Ctx → Server MainAPI
-handleMainApi ctx = handleProverApi ctx :<|> swaggerSchemaUIServer swagger
+handleMainApi ctx = handleProverApi ctx :<|> swaggerSchemaUIServer proverSwagger
