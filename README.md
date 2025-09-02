@@ -2,6 +2,6 @@
 
 This repository houses the server for generating zero-knowledge proofs for ZK based smart wallet by [zkFold](https://zkfold.io/). 
 
-## OpenApi documentation
+## API documentation
 
-Endpoints made available by server are specified [here](./web/openapi/api.yaml).
+Endpoints made available by server are specified [here](https://wallet-prover.zkfold.io/docs).
