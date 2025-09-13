@@ -8,11 +8,13 @@ COPY . /app/
 # Install dependencies
 RUN apt-get update -y && \
     apt-get install -y \ 
-    bash curl git make gcc g++ libgmp-dev zlib1g-dev\
+    bash curl git make gcc g++ \ 
+    libgmp-dev \
+    liblzma-dev \
+    zlib1g-dev \
     pkg-config \
     build-essential \
     curl
-RUN apt install liblzma-dev
 
 # Install ghcup, ghc and cabal
 RUN curl -L https://downloads.haskell.org/~ghcup/x86_64-linux-ghcup -o /usr/bin/ghcup && \
