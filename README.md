@@ -8,6 +8,11 @@ You can build docker container with the next command
 docker build -t smart-wallet-prover:latest .
 ```
 
+To run a docker container and server
+```bash
+docker run -itd --network=host smart-wallet-prover:latest
+```
+
 ## API documentation
 
 Endpoints made available by server are specified [here](https://wallet-prover.zkfold.io/docs).
