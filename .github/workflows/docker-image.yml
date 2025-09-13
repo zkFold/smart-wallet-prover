@@ -14,7 +14,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag smart-wallet-prover:$(date +%s)
+      run: docker build . --file Dockerfile --tag smart-wallet-prover:ci
 
     - name: Run docker container and server
-      run: docker run -itd --network=host smart-wallet-prover:$(date +%s)
+      run: docker run -itd --network=host smart-wallet-prover:ci
