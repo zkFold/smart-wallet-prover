@@ -6,7 +6,6 @@ license-file: LICENSE
 author: Vladimir Morozov 
 maintainer: info@zkfold.io
 build-type: Simple
-extra-doc-files: CHANGELOG.md
 
 common common
   default-language: GHC2021
