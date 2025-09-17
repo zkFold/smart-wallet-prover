@@ -13,9 +13,10 @@ module ZkFold.Cardano.SmartWallet.Types.Encryption (
 
 import Control.Lens hiding ((.=))
 import Control.Monad.IO.Class (MonadIO (..))
+import Crypto.Hash.Algorithms qualified as Hash
 import Crypto.PubKey.RSA (generate)
 import Crypto.PubKey.RSA qualified as RSA
-import Crypto.PubKey.RSA.PKCS15 qualified as PKCS15
+import Crypto.PubKey.RSA.OAEP qualified as OAEP
 import Crypto.Random.Types qualified as Crypto
 import Data.Aeson
 import Data.Aeson.Casing
@@ -142,7 +143,8 @@ removePrivateKey KeyPair {..} = PublicKeyBundle kpId kpPublic
 decrypt ∷ ProveRequestMonad m ⇒ Maybe Text → PrivateKey → ByteString → m ByteString
 decrypt maybeName (PrivateKey pkey) bs = do
   let errorMsg = "Could not decrypt the " <> fromMaybe "byte string" maybeName
-  decrypted ← PKCS15.decryptSafer pkey bs
+  let oaepParams = OAEP.defaultOAEPParams Hash.SHA256
+  decrypted ← OAEP.decryptSafer oaepParams pkey bs
   case decrypted of
     Left _ → throw (ZKPEDecryptionError $ ZKDecryptionFailed errorMsg)
     Right res → pure res
