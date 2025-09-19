@@ -57,7 +57,7 @@ library
     PackageInfo_smart_wallet_prover
 
   build-depends:
-    base >=4.18.2.1 && <5,
+    base >= 4.9 && < 5,
     adjunctions,
     aeson,
     aeson-casing,
@@ -91,6 +91,12 @@ executable smart-wallet-prover
   build-depends:
     base,
     optparse-applicative,
-    smart-wallet-prover,
+    zkfold-prover-api,
+    symbolic-base,
+    symbolic-examples,
+    openapi3,
+    bytestring,
+    cryptonite,
+    adjunctions,
 
   hs-source-dirs: app

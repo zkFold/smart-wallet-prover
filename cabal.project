@@ -1,12 +1,15 @@
 packages:
   . 
 
-tests: true
+source-repository-package
+  type: git
+  location: https://github.com/zkFold/symbolic-prover-api.git
+  tag: 9dcd136114ca1e0c07db87ee462123b0a6ff6801
 
 source-repository-package
   type: git
   location: https://github.com/zkFold/symbolic.git
-  tag: 2f513daa5d4e9de083adc602e5f9c22922f25221 
+  tag: d4d9de8f48c5f514037bcc35a49fb7c96a4883e2 
   subdir: 
     symbolic-base
     symbolic-cardano
