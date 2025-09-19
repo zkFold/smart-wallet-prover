@@ -14,7 +14,9 @@ import Data.Map.Strict qualified as M
 import Data.Maybe (fromMaybe)
 import Data.Time.Clock (getCurrentTime)
 import ZkFold.Algebra.Class
+import ZkFold.Algebra.Number
 import ZkFold.Data.Binary (fromByteString)
+import ZkFold.Protocol.NonInteractiveProof (TrustedSetup)
 import ZkFold.Protocol.Plonkup.Prover.Secret (PlonkupProverSecret (..))
 import ZkFold.Symbolic.Examples.SmartWallet (expModCircuit, expModProof, mkProof)
 
@@ -26,8 +28,8 @@ import ZkFold.Cardano.SmartWallet.Types.Prove
 
 -- | Initialise a ZK Proof and obtain a proof identifier.
 -- The proof input must be encrypted with one of the server's public keys.
-prove ∷ ProveRequestMonad m ⇒ Proofs → STM.TVar [KeyPair] → ZKProveRequest → m ProofId
-prove proofs keys request = do
+prove ∷ ProveRequestMonad m ⇒ TrustedSetup (2 ^ 18 + 6) → Proofs → STM.TVar [KeyPair] → ZKProveRequest → m ProofId
+prove ts proofs keys request = do
   pid ← randomProofId
   zkProofInput ← decryptInput keys request
   liftIO . STM.atomically $ do
@@ -36,7 +38,7 @@ prove proofs keys request = do
   _ ← liftIO . forkIO $ do
     let randomFieldElement = fromMaybe zero . fromByteString <$> Crypto.getRandomBytes 32
     proverSecret ← PlonkupProverSecret <$> sequence (tabulate $ const randomFieldElement)
-    let !proofBytes = mkProof $ expModProof @ByteString one proverSecret expModCircuit zkProofInput
+    let !proofBytes = mkProof $ expModProof @ByteString ts proverSecret expModCircuit zkProofInput
     time ← getCurrentTime
     STM.atomically $ do
       m ← STM.readTVar proofs

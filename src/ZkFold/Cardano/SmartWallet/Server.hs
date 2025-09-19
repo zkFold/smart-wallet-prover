@@ -9,6 +9,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.Wai.Middleware.Cors (CorsResourcePolicy (..), cors, corsRequestHeaders)
 import Network.Wai.Middleware.RequestLogger (logStdout)
 import Servant
+import ZkFold.Protocol.NonInteractiveProof (powersOfTauSubset)
 
 import ZkFold.Cardano.SmartWallet.Server.Handler
 import ZkFold.Cardano.SmartWallet.Types
@@ -35,10 +36,12 @@ runServer port = do
   proofsDb ← newTVarIO M.empty
   key ← randomKeyPair
   keysVar ← newTVarIO [key]
+  ts ← powersOfTauSubset
   let
     ctx =
       Ctx
         { ctxProofsDatabase = proofsDb
         , ctxServerKeys = keysVar
+        , ctxTrustedSetup = ts
         }
   run port $ logStdout $ corsMiddleware $ serve mainAPI $ handleMainApi ctx
