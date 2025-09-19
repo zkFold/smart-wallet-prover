@@ -78,7 +78,7 @@ handleGetKeys ∷ Ctx → Handler [PublicKeyBundle]
 handleGetKeys Ctx {..} = getPublicKeys ctxServerKeys
 
 handleProve ∷ Ctx → ZKProveRequest → Handler ProofId
-handleProve Ctx {..} = prove ctxProofsDatabase ctxServerKeys
+handleProve Ctx {..} = prove ctxTrustedSetup ctxProofsDatabase ctxServerKeys
 
 handleProofStatus ∷ Ctx → ProofId → Handler ProofStatus
 handleProofStatus Ctx {..} = getProofStatus ctxProofsDatabase
