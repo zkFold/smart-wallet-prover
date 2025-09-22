@@ -3,6 +3,8 @@ module ZkFold.Cardano.SmartWallet.Types.Ctx (
 ) where
 
 import Control.Concurrent.STM (TVar)
+import ZkFold.Algebra.Number
+import ZkFold.Protocol.NonInteractiveProof (TrustedSetup)
 
 import ZkFold.Cardano.SmartWallet.Types.Encryption
 import ZkFold.Cardano.SmartWallet.Types.Prove
@@ -11,4 +13,5 @@ import ZkFold.Cardano.SmartWallet.Types.Prove
 data Ctx = Ctx
   { ctxProofsDatabase ∷ !Proofs
   , ctxServerKeys ∷ !(TVar [KeyPair])
+  , ctxTrustedSetup ∷ !(TrustedSetup (2 ^ 18 + 6))
   }
