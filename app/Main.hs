@@ -9,13 +9,10 @@ import Data.ByteString (ByteString)
 import Data.Functor.Rep (tabulate)
 import Data.Maybe (fromMaybe)
 import Data.OpenApi (NamedSchema (..), ToSchema (..))
-import GHC.TypeNats (type (+), type (^))
 import Options.Applicative
 import System.IO.Unsafe
 import ZkFold.Algebra.Class
 import ZkFold.Data.Binary (fromByteString)
-import ZkFold.Protocol.NonInteractiveProof (TrustedSetup)
-import ZkFold.Protocol.NonInteractiveProof.TrustedSetup (powersOfTauSubset)
 import ZkFold.Protocol.Plonkup.Prover.Secret (PlonkupProverSecret (..))
 import ZkFold.Prover.API.Server
 import ZkFold.Prover.API.Types.ProveAlgorithm (ProveAlgorithm (proveAlgorithm))
@@ -29,6 +26,9 @@ import ZkFold.Symbolic.Examples.SmartWallet (
   mkProof,
  )
 import Prelude hiding (Bool, (==))
+import ZkFold.Protocol.NonInteractiveProof (TrustedSetup)
+import GHC.TypeNats (type (+), type (^))
+import ZkFold.Protocol.NonInteractiveProof.TrustedSetup (powersOfTauSubset)
 
 portParser ∷ Parser Int
 portParser =
