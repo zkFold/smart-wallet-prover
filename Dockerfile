@@ -11,6 +11,7 @@ RUN apt-get update -y && \
     bash curl git make gcc g++ \ 
     libgmp-dev \
     liblzma-dev \
+    libpq-dev \
     zlib1g-dev \
     pkg-config \
     build-essential \
