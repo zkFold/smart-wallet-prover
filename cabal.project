@@ -6,7 +6,7 @@ tests: true
 source-repository-package
   type: git
   location: https://github.com/zkFold/symbolic.git
-  tag: feb9fabe49f70cd5cf4f07af875bf0fa58ec91a1 
+  tag: dfaaf701137f616145b62ff7d8deac16d29f6b1f 
   subdir: 
     symbolic-base
     symbolic-cardano
