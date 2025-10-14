@@ -1,0 +1,8 @@
+contractId: 1
+dbHost: localhost
+dbName: postgres
+dbPassword: password
+dbPort: 5432
+dbUser: postgres
+nWorkers: 4
+serverPort: 8083
