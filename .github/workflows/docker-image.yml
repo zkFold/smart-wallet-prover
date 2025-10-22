@@ -14,4 +14,4 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build the Docker image
-      run: docker build -t smart-wallet-prover:latest
+      run: docker build -t smart-wallet-prover:latest .
