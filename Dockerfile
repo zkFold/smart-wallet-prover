@@ -15,7 +15,8 @@ RUN apt-get update -y && \
     zlib1g-dev \
     pkg-config \
     build-essential \
-    curl
+    curl \
+    sqlite3
 
 # Install ghcup, ghc and cabal
 RUN curl -L https://downloads.haskell.org/~ghcup/x86_64-linux-ghcup -o /usr/bin/ghcup && \
