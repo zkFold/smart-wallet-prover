@@ -2,3 +2,4 @@ contractId: 1
 dbFile: smart-wallet-prover.db
 nWorkers: 4
 serverPort: 8083
+encryptionMode: encrypted

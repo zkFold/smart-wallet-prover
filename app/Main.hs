@@ -8,7 +8,8 @@ import Crypto.Random.Types qualified as Crypto
 import Data.ByteString (ByteString)
 import Data.Functor.Rep (tabulate)
 import Data.Maybe (fromMaybe)
-import Data.OpenApi (NamedSchema (..), ToSchema (..))
+import Data.Function ((&))
+import Data.OpenApi as Swagger hiding (value, info)
 import Data.Yaml (FromJSON)
 import Data.Yaml.Aeson (decodeFileThrow)
 import GHC.Generics
@@ -23,7 +24,6 @@ import ZkFold.Protocol.Plonkup.Prover.Secret (PlonkupProverSecret (..))
 import ZkFold.Prover.API.Server
 import ZkFold.Prover.API.Types.ProveAlgorithm (ProveAlgorithm (proveAlgorithm))
 import ZkFold.Symbolic.Examples.SmartWallet (
-  ByteStringFromHex,
   ExpModProofInput,
   ZKF (..),
   ZKProofBytes,
@@ -32,6 +32,7 @@ import ZkFold.Symbolic.Examples.SmartWallet (
   mkProof,
  )
 import Prelude hiding (Bool, (==))
+import ZkFold.Prover.API.Utils (addSwaggerDescription)
 
 configPathParser ∷ Parser FilePath
 configPathParser =
@@ -44,15 +45,18 @@ configPathParser =
         <> metavar "PATH"
     )
 
-deriving newtype instance ToSchema ZKF
+instance Swagger.ToSchema ZKF where
+  declareNamedSchema =
+    Swagger.genericDeclareNamedSchema Swagger.defaultSchemaOptions
+      & addSwaggerDescription "Field element."
 
 instance ToSchema ExpModProofInput
 
-instance ToSchema ByteStringFromHex where
-  declareNamedSchema _ = do
-    pure $ NamedSchema (Just "Byte string in hex encoding") mempty
+instance Swagger.ToSchema ZKProofBytes where
+  declareNamedSchema =
+    Swagger.genericDeclareNamedSchema Swagger.defaultSchemaOptions
+      & addSwaggerDescription "Proof bytes where bytes are represented in hexadecimal encoding."
 
-instance ToSchema ZKProofBytes
 
 ts ∷ TrustedSetup (2 ^ 18 + 6)
 {-# NOINLINE ts #-}
