@@ -41,7 +41,7 @@ configPathParser =
     ( long "config"
         <> help "Path to server configuration yaml file"
         <> showDefault
-        <> value "./smart-wallet-prover-config.yaml"
+        <> value "./config.yaml"
         <> metavar "PATH"
     )
 
