@@ -9,20 +9,17 @@ import Data.ByteString (ByteString)
 import Data.Functor.Rep (tabulate)
 import Data.Maybe (fromMaybe)
 import Data.Function ((&))
-import Data.OpenApi as Swagger hiding (value, info)
-import Data.Yaml (FromJSON)
-import Data.Yaml.Aeson (decodeFileThrow)
-import GHC.Generics
+import Data.Swagger as Swagger hiding (info)
 import GHC.TypeNats (type (+), type (^))
 import Options.Applicative
 import System.IO.Unsafe
 import ZkFold.Algebra.Class
 import ZkFold.Data.Binary (fromByteString)
-import ZkFold.Protocol.NonInteractiveProof (TrustedSetup)
-import ZkFold.Protocol.NonInteractiveProof.TrustedSetup (powersOfTauSubset)
+import ZkFold.Protocol.NonInteractiveProof.TrustedSetup (TrustedSetup, powersOfTauSubset)
 import ZkFold.Protocol.Plonkup.Prover.Secret (PlonkupProverSecret (..))
 import ZkFold.Prover.API.Server
 import ZkFold.Prover.API.Types.ProveAlgorithm (ProveAlgorithm (proveAlgorithm))
+import ZkFold.Prover.API.Utils (addSwaggerDescription)
 import ZkFold.Symbolic.Examples.SmartWallet (
   ExpModProofInput,
   ZKF (..),
@@ -32,18 +29,7 @@ import ZkFold.Symbolic.Examples.SmartWallet (
   mkProof,
  )
 import Prelude hiding (Bool, (==))
-import ZkFold.Prover.API.Utils (addSwaggerDescription)
-
-configPathParser ∷ Parser FilePath
-configPathParser =
-  option
-    str
-    ( long "config"
-        <> help "Path to server configuration yaml file"
-        <> showDefault
-        <> value "./config.yaml"
-        <> metavar "PATH"
-    )
+import ZkFold.Prover.API.Types.Config
 
 instance Swagger.ToSchema ZKF where
   declareNamedSchema =
@@ -69,21 +55,15 @@ instance ProveAlgorithm ExpModProofInput ZKProofBytes where
     proverSecret = PlonkupProverSecret <$> sequence (tabulate $ const randomFieldElement)
     !proofBytes = mkProof $ expModProof @ByteString ts (unsafePerformIO proverSecret) expModCircuit zkProofInput
 
-deriving instance Generic ServerConfig
-
-instance FromJSON ServerConfig
-
 main ∷ IO ()
 main = do
-  serverConfigPath ← execParser opts
-  print serverConfigPath
-  serverConfig ← decodeFileThrow serverConfigPath
+  serverConfig ← execParser opts
   print @String ("Started with " <> show serverConfig)
   runServer @ExpModProofInput @ZKProofBytes serverConfig
  where
   opts =
     info
-      (configPathParser <**> helper)
+      (cliParser defaultServerConfig <**> helper)
       ( fullDesc
           <> progDesc "Smart Wallet prover"
           <> header "zkFold's Smart Wallet prover server"
