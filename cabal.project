@@ -4,7 +4,7 @@ packages:
 source-repository-package
   type: git
   location: https://github.com/zkFold/symbolic-prover-api.git
-  tag: 3cc5d04f58e27fc3db413e29b4d3fbee6cfed82a
+  tag: c217ef2d263404f00409000fa5d5b7b0e383cf94
 
 source-repository-package
   type: git

@@ -57,14 +57,7 @@ instance ProveAlgorithm ExpModProofInput ZKProofBytes where
 
 main ∷ IO ()
 main = do
-  serverConfig ← execParser opts
+  serverConfig ← parseConfig
+
   print @String ("Started with " <> show serverConfig)
   runServer @ExpModProofInput @ZKProofBytes serverConfig
- where
-  opts =
-    info
-      (cliParser defaultServerConfig <**> helper)
-      ( fullDesc
-          <> progDesc "Smart Wallet prover"
-          <> header "zkFold's Smart Wallet prover server"
-      )
