@@ -39,7 +39,7 @@ executable smart-wallet-prover
   build-depends:
     base,
     optparse-applicative,
-    zkfold-prover-api,
+    symbolic-prover-api,
     symbolic-base,
     symbolic-examples,
     swagger2,
