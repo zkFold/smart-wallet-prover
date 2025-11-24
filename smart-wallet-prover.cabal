@@ -38,12 +38,11 @@ executable smart-wallet-prover
   main-is: Main.hs
   build-depends:
     base,
-    yaml,
     optparse-applicative,
-    zkfold-prover-api,
+    symbolic-prover-api,
     symbolic-base,
     symbolic-examples,
-    openapi3,
+    swagger2,
     bytestring,
     cryptonite,
     adjunctions,
