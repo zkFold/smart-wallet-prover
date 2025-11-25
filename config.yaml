@@ -1,6 +1,5 @@
 serverPort: 8083
 dbFile: proofs.db
 nWorkers: 2
-proverMode: encrypted
 proofLifetime: 30
 keysLifetime: 86400
