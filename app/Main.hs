@@ -6,9 +6,9 @@ module Main where
 
 import Crypto.Random.Types qualified as Crypto
 import Data.ByteString (ByteString)
+import Data.Function ((&))
 import Data.Functor.Rep (tabulate)
 import Data.Maybe (fromMaybe)
-import Data.Function ((&))
 import Data.Swagger as Swagger hiding (info)
 import GHC.TypeNats (type (+), type (^))
 import Options.Applicative
@@ -18,6 +18,7 @@ import ZkFold.Data.Binary (fromByteString)
 import ZkFold.Protocol.NonInteractiveProof.TrustedSetup (TrustedSetup, powersOfTauSubset)
 import ZkFold.Protocol.Plonkup.Prover.Secret (PlonkupProverSecret (..))
 import ZkFold.Prover.API.Server
+import ZkFold.Prover.API.Types.Config
 import ZkFold.Prover.API.Types.ProveAlgorithm (ProveAlgorithm (proveAlgorithm))
 import ZkFold.Prover.API.Utils (addSwaggerDescription)
 import ZkFold.Symbolic.Examples.SmartWallet (
@@ -29,7 +30,6 @@ import ZkFold.Symbolic.Examples.SmartWallet (
   mkProof,
  )
 import Prelude hiding (Bool, (==))
-import ZkFold.Prover.API.Types.Config
 
 instance Swagger.ToSchema ZKF where
   declareNamedSchema =
@@ -42,7 +42,6 @@ instance Swagger.ToSchema ZKProofBytes where
   declareNamedSchema =
     Swagger.genericDeclareNamedSchema Swagger.defaultSchemaOptions
       & addSwaggerDescription "Proof bytes where bytes are represented in hexadecimal encoding."
-
 
 ts ∷ TrustedSetup (2 ^ 18 + 6)
 {-# NOINLINE ts #-}
@@ -59,5 +58,4 @@ main ∷ IO ()
 main = do
   serverConfig ← parseConfig
 
-  print @String ("Started with " <> show serverConfig)
   runServer @ExpModProofInput @ZKProofBytes serverConfig

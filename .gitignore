@@ -28,3 +28,4 @@ e2e/public/css/
 secrets/
 *.sqlite
 .vscode
+*.db

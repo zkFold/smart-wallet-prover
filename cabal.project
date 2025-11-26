@@ -6,7 +6,7 @@ constraints: warp >= 3.4.10
 source-repository-package
   type: git
   location: https://github.com/zkFold/symbolic-prover-api.git
-  tag: main
+  tag: b712917e17fccccc07387cfaa248008b70f7a371
 
 source-repository-package
   type: git
