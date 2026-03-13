@@ -36,6 +36,7 @@ common common
 executable smart-wallet-prover
   import: common
   main-is: Main.hs
+  ghc-options: -threaded
   build-depends:
     base,
     optparse-applicative,
@@ -46,5 +47,6 @@ executable smart-wallet-prover
     bytestring,
     cryptonite,
     adjunctions,
+    yaml,
 
   hs-source-dirs: app

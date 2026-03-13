@@ -6,10 +6,12 @@ module Main where
 
 import Crypto.Random.Types qualified as Crypto
 import Data.ByteString (ByteString)
+import Data.ByteString qualified as BS
 import Data.Function ((&))
 import Data.Functor.Rep (tabulate)
 import Data.Maybe (fromMaybe)
 import Data.Swagger as Swagger hiding (info)
+import Data.Yaml qualified as Yaml
 import GHC.TypeNats (type (+), type (^))
 import Options.Applicative
 import System.IO.Unsafe
@@ -17,6 +19,7 @@ import ZkFold.Algebra.Class
 import ZkFold.Data.Binary (fromByteString)
 import ZkFold.Protocol.NonInteractiveProof.TrustedSetup (TrustedSetup, powersOfTauSubset)
 import ZkFold.Protocol.Plonkup.Prover.Secret (PlonkupProverSecret (..))
+import ZkFold.Prover.API.Handler (openApi)
 import ZkFold.Prover.API.Server
 import ZkFold.Prover.API.Types.Config
 import ZkFold.Prover.API.Types.ProveAlgorithm (ProveAlgorithm (proveAlgorithm))
@@ -54,8 +57,16 @@ instance ProveAlgorithm ExpModProofInput ZKProofBytes where
     proverSecret = PlonkupProverSecret <$> sequence (tabulate $ const randomFieldElement)
     !proofBytes = mkProof $ expModProof @ByteString ts (unsafePerformIO proverSecret) expModCircuit zkProofInput
 
+generateOpenApiYaml ∷ FilePath → IO ()
+generateOpenApiYaml path = do
+  let spec = openApi @ExpModProofInput @ZKProofBytes
+  BS.writeFile path (Yaml.encode spec)
+  putStrLn $ "Generated OpenAPI spec at: " <> path
+
 main ∷ IO ()
 main = do
   serverConfig ← parseConfig
+
+  generateOpenApiYaml "web/openapi/api.yaml"
 
   runServer @ExpModProofInput @ZKProofBytes serverConfig
